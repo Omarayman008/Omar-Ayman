@@ -23,7 +23,7 @@ interface Project {
 const DEFAULT_PROJECTS: Project[] = [
   {
     name: "Fluxer.Java",
-    tech: "Java / Gradle",
+    tech: "Java / Maven",
     description: "High-performance administrative framework for Java applications with advanced automation features.",
     link: "https://github.com/Omarayman008/fluxer.java",
     level: 1,
@@ -45,7 +45,7 @@ const DEFAULT_PROJECTS: Project[] = [
     name: "Commander Bot",
     tech: "Java / JDA",
     description: "Advanced Discord management system with auto-moderation, custom rank engine, and leveling system.",
-    link: "https://github.com/Omarayman008/fluxer",
+    link: "https://github.com/Omarayman008/commander-bot",
     level: 3,
     color: "#ff00c1",
     biomeColor: "#10050f",
