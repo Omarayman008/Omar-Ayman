@@ -2,6 +2,16 @@
 
 import React from 'react';
 
+const EXPERTISE = [
+  "Core Backend & System Architecture Expert",
+  "Professional Web UI/UX Designer",
+  "Hardware Interaction Specialist",
+  "Windows OS & Unity Engine Expert",
+  "AI Programming & Advanced Automation",
+  "Server Infrastructure & JDA Framework",
+  "Data Formatting & Visualization Master"
+];
+
 const SKILLS_CATEGORIES = [
   {
     title: "Core Development",
@@ -34,6 +44,20 @@ const SkillsSection: React.FC = () => {
     <section className="section" id="skills">
       <div className="container">
         <h2 className="text-accent center">02. _SKILLS_AND_STACK</h2>
+
+        <div className="expertise-wrapper">
+          <div className="expertise-list">
+            <h4 className="expertise-title">// CORE_EXPERTISE_SUMMARY</h4>
+            <ul>
+              {EXPERTISE.map((point, i) => (
+                <li key={i}>
+                  <span className="bullet">0{i+1}</span>
+                  <span className="text">{point}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
         
         <div className="skills-stack">
           {SKILLS_CATEGORIES.map((cat, index) => (
@@ -68,13 +92,52 @@ const SkillsSection: React.FC = () => {
       <style jsx>{`
         .center {
           text-align: center;
-          margin-bottom: 4rem;
+          margin-bottom: 2rem;
+        }
+        .expertise-wrapper {
+          display: flex;
+          justify-content: center;
+          margin-bottom: 6rem;
+        }
+        .expertise-list {
+          background: rgba(189, 255, 144, 0.02);
+          padding: 2.5rem;
+          border: 1px solid rgba(189, 255, 144, 0.1);
+          max-width: 800px;
+          width: 100%;
+        }
+        .expertise-title {
+          font-size: 0.8rem;
+          color: #666;
+          letter-spacing: 5px;
+          margin-bottom: 2rem;
+          text-align: center;
+        }
+        ul {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 1rem 3rem;
+        }
+        li {
+          display: flex;
+          align-items: center;
+          gap: 15px;
+          font-size: 0.9rem;
+          color: #ccc;
+        }
+        .bullet {
+          color: var(--accent);
+          font-family: 'Courier New', monospace;
+          font-weight: bold;
+          font-size: 0.8rem;
         }
         .skills-stack {
           display: flex;
           flex-direction: column;
           gap: 6rem;
-          margin-top: 2rem;
           width: 100%;
         }
         .skill-category-full {
@@ -187,6 +250,10 @@ const SkillsSection: React.FC = () => {
           text-shadow: 0 0 10px var(--accent);
         }
         @media (max-width: 768px) {
+          ul {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+          }
           .category-header {
             gap: 10px;
           }
