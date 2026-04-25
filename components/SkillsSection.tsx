@@ -15,7 +15,7 @@ const SKILLS_CATEGORIES = [
   },
   {
     title: "Systems & DevOps",
-    items: ["Docker", "Maven", "Git", "Unity Engine", "Windows Expert", "Hardware Management"],
+    items: ["Docker", "Redis", "Git", "Supabase", "SQL", "Maven", "Unity Engine", "Windows Expert"],
     description: "Managing operational environments and low-level system interactions."
   },
   {
@@ -35,9 +35,9 @@ const SkillsSection: React.FC = () => {
       <div className="container">
         <h2 className="text-accent center">02. _SKILLS_AND_STACK</h2>
         
-        <div className="skills-grid">
+        <div className="skills-stack">
           {SKILLS_CATEGORIES.map((cat, index) => (
-            <div key={index} className="skill-category">
+            <div key={index} className="skill-category-full">
               <div className="category-header">
                 <span className="category-line"></span>
                 <h3>{cat.title.toUpperCase()}</h3>
@@ -64,73 +64,60 @@ const SkillsSection: React.FC = () => {
             ))}
           </div>
         </div>
-
-        <div className="jitpack-integration">
-          <a href="https://jitpack.io/#Omarayman008/fluxer.java" target="_blank" rel="noopener noreferrer" className="jitpack-card">
-            <div className="jitpack-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
-            </div>
-            <div className="jitpack-info">
-              <span className="jitpack-label">JITPACK_REGISTRY</span>
-              <h4 className="jitpack-title">fluxer.java</h4>
-            </div>
-          </a>
-        </div>
       </div>
       <style jsx>{`
         .center {
           text-align: center;
           margin-bottom: 4rem;
         }
-        .skills-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-          gap: 4rem;
+        .skills-stack {
+          display: flex;
+          flex-direction: column;
+          gap: 6rem;
           margin-top: 2rem;
+          width: 100%;
         }
-        .skill-category {
+        .skill-category-full {
           display: flex;
           flex-direction: column;
           align-items: center;
-          background: rgba(255, 255, 255, 0.02);
-          padding: 2rem;
-          border: 1px solid rgba(255, 255, 255, 0.05);
-          transition: border-color 0.3s;
-        }
-        .skill-category:hover {
-          border-color: rgba(189, 255, 144, 0.2);
+          width: 100%;
         }
         .category-header {
           display: flex;
           align-items: center;
-          gap: 15px;
+          gap: 20px;
           margin-bottom: 1rem;
           width: 100%;
+          max-width: 1000px;
         }
         .category-line {
           flex: 1;
           height: 1px;
-          background: linear-gradient(90deg, transparent, rgba(189, 255, 144, 0.3), transparent);
+          background: linear-gradient(90deg, transparent, rgba(189, 255, 144, 0.4), transparent);
         }
         .category-desc {
-          font-size: 0.8rem;
+          font-size: 0.9rem;
           color: #666;
-          margin-bottom: 2rem;
+          margin-bottom: 2.5rem;
           text-align: center;
           font-style: italic;
+          max-width: 600px;
         }
         h3 {
           color: #fff;
-          font-size: 1.1rem;
-          letter-spacing: 3px;
+          font-size: 1.4rem;
+          letter-spacing: 5px;
           margin: 0;
           white-space: nowrap;
+          text-shadow: 0 0 15px rgba(189, 255, 144, 0.2);
         }
         .skill-tags {
           display: flex;
           flex-wrap: wrap;
-          gap: 0.8rem;
+          gap: 1.2rem;
           justify-content: center;
+          max-width: 900px;
         }
         .skill-item {
           position: relative;
@@ -138,23 +125,25 @@ const SkillsSection: React.FC = () => {
           transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         .skill-item:hover {
-          transform: translateY(-3px) scale(1.02);
+          transform: translateY(-5px) scale(1.05);
         }
         .skill-tag {
           display: block;
-          padding: 0.5rem 1rem;
+          padding: 0.8rem 1.8rem;
           background: rgba(255, 255, 255, 0.03);
           border: 1px solid rgba(189, 255, 144, 0.1);
           color: #ccc;
-          font-size: 0.8rem;
+          font-size: 0.9rem;
           font-family: 'Courier New', monospace;
           position: relative;
           z-index: 1;
+          transition: all 0.3s ease;
         }
         .skill-item:hover .skill-tag {
           border-color: var(--accent);
           color: #fff;
-          background: rgba(189, 255, 144, 0.05);
+          background: rgba(189, 255, 144, 0.1);
+          box-shadow: 0 0 20px rgba(189, 255, 144, 0.2);
         }
         .skill-glow {
           position: absolute;
@@ -162,91 +151,52 @@ const SkillsSection: React.FC = () => {
           left: -100%;
           width: 100%;
           height: 100%;
-          background: linear-gradient(90deg, transparent, rgba(189, 255, 144, 0.1), transparent);
+          background: linear-gradient(90deg, transparent, rgba(189, 255, 144, 0.2), transparent);
           transition: left 0.5s ease;
         }
         .skill-item:hover .skill-glow {
           left: 100%;
         }
         .concepts-section {
-          margin-top: 6rem;
+          margin-top: 8rem;
           text-align: center;
-          background: rgba(0,0,0,0.3);
-          padding: 2rem;
-          border: 1px dashed rgba(255,255,255,0.1);
+          background: rgba(189, 255, 144, 0.02);
+          padding: 3rem;
+          border: 1px dashed rgba(189, 255, 144, 0.1);
         }
         .concepts-title {
           font-size: 0.9rem;
-          color: #444;
-          margin-bottom: 2rem;
-          letter-spacing: 5px;
+          color: #666;
+          margin-bottom: 2.5rem;
+          letter-spacing: 6px;
         }
         .concepts-tags {
           display: flex;
           flex-wrap: wrap;
-          gap: 1rem;
+          gap: 1.5rem;
           justify-content: center;
         }
         .concept-tag {
           color: #888;
-          font-size: 0.85rem;
-          border-bottom: 1px solid transparent;
+          font-size: 0.9rem;
           transition: all 0.3s;
+          cursor: default;
         }
         .concept-tag:hover {
           color: var(--accent);
-          border-bottom-color: var(--accent);
-        }
-        .jitpack-integration {
-          margin-top: 5rem;
-          display: flex;
-          justify-content: center;
-          padding-left: 40px;
-        }
-        .jitpack-card {
-          background: rgba(189, 255, 144, 0.03);
-          border: 1px solid rgba(189, 255, 144, 0.1);
-          padding: 1rem 2rem;
-          display: flex;
-          align-items: center;
-          gap: 1.5rem;
-          text-decoration: none;
-          transition: all 0.4s ease;
-        }
-        .jitpack-card:hover {
-          border-color: var(--accent);
-          background: rgba(189, 255, 144, 0.08);
-          box-shadow: 0 0 30px rgba(189, 255, 144, 0.1);
-        }
-        .jitpack-icon {
-          width: 30px;
-          height: 30px;
-          color: var(--accent);
-        }
-        .jitpack-info {
-          display: flex;
-          flex-direction: column;
-        }
-        .jitpack-label {
-          font-size: 0.6rem;
-          color: #666;
-          letter-spacing: 2px;
-        }
-        .jitpack-title {
-          font-size: 1.2rem;
-          color: #fff;
-          margin: 0;
-          font-family: 'Courier New', monospace;
+          text-shadow: 0 0 10px var(--accent);
         }
         @media (max-width: 768px) {
-          .skills-grid {
-            gap: 3rem;
+          .category-header {
+            gap: 10px;
           }
           h3 {
             font-size: 1rem;
+            letter-spacing: 2px;
           }
-          .jitpack-integration {
-            padding-left: 0;
+          .skill-tag {
+            padding: 0.6rem 1.2rem;
+            font-size: 0.8rem;
           }
         }
       `}</style>
