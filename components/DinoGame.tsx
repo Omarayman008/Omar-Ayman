@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 interface Project {
+  id?: number;
   name: string;
   tech: string;
   description: string;
@@ -39,7 +40,7 @@ const DinoGame: React.FC<DinoGameProps> = ({ projects }) => {
     if (currentProject) {
       document.title = `LEVEL ${level}: ${currentProject.name.toUpperCase()}`;
     } else {
-      document.title = "OMAR AYMAN | PORTFOLIO";
+      document.title = "Omar Ayman Profilito";
     }
   }, [level, projects]);
 

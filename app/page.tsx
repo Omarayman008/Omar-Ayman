@@ -10,6 +10,7 @@ import ProjectsSection from '../components/ProjectsSection';
 import AdminPanel from '../components/AdminPanel';
 
 interface Project {
+  id?: number;
   name: string;
   tech: string;
   description: string;
@@ -57,32 +58,68 @@ export default function Home() {
   const [projects, setProjects] = useState<Project[]>(DEFAULT_PROJECTS);
 
   useEffect(() => {
-    const saved = localStorage.getItem('omar_projects');
-    if (saved) {
-      setProjects(JSON.parse(saved));
-    }
+    fetchProjects();
   }, []);
 
-  const saveProjects = (updated: Project[]) => {
-    setProjects(updated);
-    localStorage.setItem('omar_projects', JSON.stringify(updated));
-  };
-
-  const handleAddProject = (newProject: Project) => {
-    saveProjects([...projects, newProject]);
-  };
-
-  const handleDeleteProject = (index: number) => {
-    if (window.confirm("ARE_YOU_SURE_YOU_WANT_TO_DELETE_THIS_DATA?")) {
-      const updated = projects.filter((_, i) => i !== index);
-      saveProjects(updated);
+  const fetchProjects = async () => {
+    try {
+      const res = await fetch('/api/projects');
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) {
+        // Map database biome_color and character_type back to camelCase
+        const mappedData = data.map((p: any) => ({
+          ...p,
+          biomeColor: p.biome_color,
+          characterType: p.character_type
+        }));
+        setProjects(mappedData);
+      }
+    } catch (error) {
+      console.error('Fetch error:', error);
     }
   };
 
-  const handleUpdateProject = (index: number, updatedProject: Project) => {
-    const updated = [...projects];
-    updated[index] = updatedProject;
-    saveProjects(updated);
+  const handleAddProject = async (newProject: Project) => {
+    try {
+      const res = await fetch('/api/projects', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newProject)
+      });
+      if (res.ok) fetchProjects();
+    } catch (error) {
+      console.error('Add error:', error);
+    }
+  };
+
+  const handleDeleteProject = async (index: number) => {
+    const project = projects[index];
+    if (!project.id) return;
+    
+    if (window.confirm("ARE_YOU_SURE_YOU_WANT_TO_DELETE_THIS_DATA?")) {
+      try {
+        const res = await fetch(`/api/projects?id=${project.id}`, { method: 'DELETE' });
+        if (res.ok) fetchProjects();
+      } catch (error) {
+        console.error('Delete error:', error);
+      }
+    }
+  };
+
+  const handleUpdateProject = async (index: number, updatedProject: Project) => {
+    const project = projects[index];
+    if (!project.id) return;
+
+    try {
+      const res = await fetch('/api/projects', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...updatedProject, id: project.id })
+      });
+      if (res.ok) fetchProjects();
+    } catch (error) {
+      console.error('Update error:', error);
+    }
   };
 
   return (
