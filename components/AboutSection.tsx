@@ -12,7 +12,7 @@ const AboutSection: React.FC = () => {
             I am <span className="text-accent">Omar Ayman</span>, a versatile Full-Stack developer dedicated to transforming complex ideas into seamless digital experiences.
           </p>
           <p>
-            From building sophisticated Discord bots and AI-driven automation systems to high-performance web applications, I handle the entire lifecycle from <span className="text-accent">idea to deployment</span>.
+            From building sophisticated Discord bots and advanced automation systems to high-performance web applications, I handle the entire lifecycle from <span className="text-accent">idea to deployment</span>.
           </p>
           <p>
             My approach is technical, minimal, and performance-first. Founder of a next-generation digital agency.

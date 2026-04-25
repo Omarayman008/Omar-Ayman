@@ -7,7 +7,7 @@ const EXPERTISE = [
   "Professional Web UI/UX Designer",
   "Hardware Interaction Specialist",
   "Windows OS & Unity Engine Expert",
-  "AI Programming & Advanced Automation",
+  "Advanced Bot Programming & Automation",
   "Server Infrastructure & JDA Framework",
   "Data Formatting & Visualization Master"
 ];
@@ -19,9 +19,9 @@ const SKILLS_CATEGORIES = [
     description: "Full-cycle engineering from high-level architecture to clean implementation."
   },
   {
-    title: "AI & Automation",
-    items: ["JDA", "Discord.js", "Aiogram", "AI/LLM Integration", "Automated Workflows"],
-    description: "Crafting intelligent systems and sophisticated bot infrastructures."
+    title: "Bot Development & Automation",
+    items: ["JDA", "Discord.js", "Aiogram", "API & Scripting Integration", "Automated Workflows"],
+    description: "Crafting efficient automated systems and sophisticated bot infrastructures."
   },
   {
     title: "Systems & DevOps",
