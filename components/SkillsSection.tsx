@@ -25,6 +25,7 @@ const SkillsSection: React.FC = () => {
               </div>
             </div>
           ))}
+        </div>
         <div className="jitpack-integration">
           <div className="jitpack-card">
             <div className="jitpack-icon">
