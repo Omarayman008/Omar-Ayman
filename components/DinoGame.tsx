@@ -35,14 +35,8 @@ const DinoGame: React.FC<DinoGameProps> = ({ projects }) => {
     lastLevelScore: 0
   });
 
-  useEffect(() => {
-    const currentProject = projects.find(p => p.level === level);
-    if (currentProject) {
-      document.title = `LEVEL ${level}: ${currentProject.name.toUpperCase()}`;
-    } else {
-      document.title = "Omar Ayman Profilito";
-    }
-  }, [level, projects]);
+  // Removed dynamic title updates to keep consistency with "Omar Ayman Profilito"
+
 
   useEffect(() => {
     const canvas = canvasRef.current;
