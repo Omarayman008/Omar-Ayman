@@ -111,6 +111,7 @@ const ProjectsSection: React.FC<{ projects: Project[] }> = ({ projects }) => {
           color: #aaa;
           line-height: 1.6;
           margin-bottom: auto;
+          white-space: pre-wrap;
         }
         .project-link {
           display: flex;
