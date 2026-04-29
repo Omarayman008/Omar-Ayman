@@ -56,9 +56,14 @@ const DEFAULT_PROJECTS: Project[] = [
 
 export default function Home() {
   const [projects, setProjects] = useState<Project[]>(DEFAULT_PROJECTS);
+  const [showAdmin, setShowAdmin] = useState(false);
 
   useEffect(() => {
     fetchProjects();
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('edit') === 'true') {
+      setShowAdmin(true);
+    }
   }, []);
 
   const fetchProjects = async () => {
@@ -124,12 +129,14 @@ export default function Home() {
 
   return (
     <main>
-      <AdminPanel 
-        projects={projects} 
-        onAddProject={handleAddProject} 
-        onDeleteProject={handleDeleteProject}
-        onUpdateProject={handleUpdateProject}
-      />
+      {showAdmin && (
+        <AdminPanel 
+          projects={projects} 
+          onAddProject={handleAddProject} 
+          onDeleteProject={handleDeleteProject}
+          onUpdateProject={handleUpdateProject}
+        />
+      )}
 
       <section className="section hero">
         <div className="container">
