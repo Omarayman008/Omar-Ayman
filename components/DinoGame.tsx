@@ -51,6 +51,10 @@ const DinoGame: React.FC<DinoGameProps> = ({ projects }) => {
       const isSpace = e instanceof KeyboardEvent && e.code === 'Space';
       const isTouch = e instanceof TouchEvent;
 
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        return;
+      }
+
       if (isSpace) {
         e.preventDefault();
       }
