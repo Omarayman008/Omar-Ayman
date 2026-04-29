@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Omar Ayman Profilito",
+  title: "Omar Ayman Portfolio",
   description: "Official portfolio of Omar Ayman - Full-Stack Developer & Systems Architect",
 };
 

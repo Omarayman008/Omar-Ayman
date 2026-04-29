@@ -35,7 +35,7 @@ const DinoGame: React.FC<DinoGameProps> = ({ projects }) => {
     lastLevelScore: 0
   });
 
-  // Removed dynamic title updates to keep consistency with "Omar Ayman Profilito"
+  // Removed dynamic title updates to keep consistency with "Omar Ayman Portfolio"
 
 
   useEffect(() => {
