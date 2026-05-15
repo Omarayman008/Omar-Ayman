@@ -32,13 +32,12 @@ const DinoGame: React.FC<DinoGameProps> = ({ projects }) => {
     revealedProject: null as Project | null,
     level: 1,
     score: 0,
-    dino: { X: 50, Y: 150, width: 40, height: 40, dy: 0, jumpForce: 12, gravity: 0.6, grounded: true },
-    obstacles: [] as { X: number, Y: number, width: number, height: number, speed: number }[],
+    dino: { x: 50, y: 150, width: 40, height: 40, dy: 0, jumpForce: 12, gravity: 0.6, grounded: true },
+    obstacles: [] as { x: number, y: number, width: number, height: number, speed: number }[],
     frame: 0,
     speed: 8,
     nextObstacle: 80,
   });
-
 
   useEffect(() => {
     gameStateRef.current.gameStarted = gameStarted;
@@ -60,7 +59,7 @@ const DinoGame: React.FC<DinoGameProps> = ({ projects }) => {
       revealedProject: null,
       level: 1,
       score: 0,
-      dino: { X: 50, Y: 150, width: 40, height: 40, dy: 0, jumpForce: 12, gravity: 0.6, grounded: true },
+      dino: { x: 50, y: 150, width: 40, height: 40, dy: 0, jumpForce: 12, gravity: 0.6, grounded: true },
       obstacles: [],
       frame: 0,
       speed: 8,
@@ -76,17 +75,17 @@ const DinoGame: React.FC<DinoGameProps> = ({ projects }) => {
 
     let animationFrameId: number;
 
-    const handleInput = (E: KeyboardEvent | TouchEvent) => {
-      const isAlt = e instanceof KeyboardEvent && (e.code === 'AltLeft' || e.code === 'AltRight');
-      const isSpace = e instanceof KeyboardEvent && e.code === 'Space';
-      const isTouch = e instanceof TouchEvent;
+    const handleInput = (event: KeyboardEvent | TouchEvent) => {
+      const isAlt = event instanceof KeyboardEvent && (event.code === 'AltLeft' || event.code === 'AltRight');
+      const isSpace = event instanceof KeyboardEvent && event.code === 'Space';
+      const isTouch = event instanceof TouchEvent;
 
-      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+      if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
         return;
       }
 
       if (isSpace) {
-        e.preventDefault();
+        event.preventDefault();
       }
 
       if (isAlt || isSpace || isTouch) {
@@ -122,10 +121,10 @@ const DinoGame: React.FC<DinoGameProps> = ({ projects }) => {
       const { dino, obstacles, speed } = current;
 
       dino.dy += dino.gravity;
-      dino.Y += dino.dy;
+      dino.y += dino.dy;
 
-      if (dino.Y + dino.height > canvas.height - 20) {
-        dino.Y = canvas.height - 20 - dino.height;
+      if (dino.y + dino.height > canvas.height - 20) {
+        dino.y = canvas.height - 20 - dino.height;
         dino.dy = 0;
         dino.grounded = true;
       }
@@ -133,8 +132,8 @@ const DinoGame: React.FC<DinoGameProps> = ({ projects }) => {
       current.frame++;
       if (current.frame > current.nextObstacle) {
         obstacles.push({
-          X: canvas.width,
-          Y: canvas.height - 20 - 40,
+          x: canvas.width,
+          y: canvas.height - 20 - 40,
           width: 20,
           height: 40,
           speed: speed
@@ -143,30 +142,30 @@ const DinoGame: React.FC<DinoGameProps> = ({ projects }) => {
         current.nextObstacle = Math.random() * (100 - speed * 2) + 50;
       }
 
-      for (let I = obstacles.length - 1; i >= 0; i--) {
+      for (let i = obstacles.length - 1; i >= 0; i--) {
         const obs = obstacles[i];
-        obs.X -= obs.speed;
+        obs.x -= obs.speed;
 
         if (
-          dino.X < obs.X + obs.width &&
-          dino.X + dino.width > obs.X &&
-          dino.Y < obs.Y + obs.height &&
-          dino.Y + dino.height > obs.Y
+          dino.x < obs.x + obs.width &&
+          dino.x + dino.width > obs.x &&
+          dino.y < obs.y + obs.height &&
+          dino.y + dino.height > obs.y
         ) {
           setIsGameOver(true);
         }
 
-        if (obs.X + obs.width < 0) {
+        if (obs.x + obs.width < 0) {
           obstacles.splice(i, 1);
           const newScore = current.score + 10;
           setScore(newScore);
 
           const levelThreshold = current.level * 100;
           if (newScore >= levelThreshold) {
-            const nextProj = projects.find(P => p.level === current.level + 1);
+            const nextProj = projects.find(p => p.level === current.level + 1);
             if (nextProj) {
               setRevealedProject(nextProj);
-              setLevel(L => l + 1);
+              setLevel(l => l + 1);
               current.speed += 1;
             }
           }
@@ -174,7 +173,7 @@ const DinoGame: React.FC<DinoGameProps> = ({ projects }) => {
       }
     };
 
-    const drawDino = (type: string, X: number, Y: number, W: number, H: number, color: string) => {
+    const drawDino = (type: string, x: number, y: number, w: number, h: number, color: string) => {
       ctx.fillStyle = color;
       if (type === 'pterodactyl') {
         ctx.beginPath();
@@ -211,7 +210,7 @@ const DinoGame: React.FC<DinoGameProps> = ({ projects }) => {
 
     const gameLoop = () => {
       const current = gameStateRef.current;
-      const currentProject = projects.find(P => p.level === current.level);
+      const currentProject = projects.find(p => p.level === current.level);
       const biomeColor = currentProject?.biomeColor || '#111';
       
       ctx.fillStyle = biomeColor;
@@ -219,8 +218,8 @@ const DinoGame: React.FC<DinoGameProps> = ({ projects }) => {
 
       ctx.strokeStyle = 'rgba(255,255,255,0.03)';
       ctx.beginPath();
-      for(let X=0; x<canvas.width; x+=20) { ctx.moveTo(x,0); ctx.lineTo(x,canvas.height); }
-      for(let Y=0; y<canvas.height; y+=20) { ctx.moveTo(0,y); ctx.lineTo(canvas.width,y); }
+      for(let x=0; x<canvas.width; x+=20) { ctx.moveTo(x,0); ctx.lineTo(x,canvas.height); }
+      for(let y=0; y<canvas.height; y+=20) { ctx.moveTo(0,y); ctx.lineTo(canvas.width,y); }
       ctx.stroke();
 
       ctx.strokeStyle = '#333';
@@ -232,11 +231,11 @@ const DinoGame: React.FC<DinoGameProps> = ({ projects }) => {
 
       const charType = currentProject?.characterType || 'rex';
       const charColor = currentProject?.color || '#bdff90';
-      drawDino(charType, current.dino.X, current.dino.Y, current.dino.width, current.dino.height, charColor);
+      drawDino(charType, current.dino.x, current.dino.y, current.dino.width, current.dino.height, charColor);
 
       ctx.fillStyle = '#ff4444';
       current.obstacles.forEach(obs => {
-        ctx.fillRect(obs.X, obs.Y, obs.width, obs.height);
+        ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
       });
 
       ctx.fillStyle = '#bdff90';
@@ -270,7 +269,6 @@ const DinoGame: React.FC<DinoGameProps> = ({ projects }) => {
       animationFrameId = requestAnimationFrame(gameLoop);
     };
 
-   
     animationFrameId = requestAnimationFrame(gameLoop);
 
     return () => {
@@ -278,7 +276,7 @@ const DinoGame: React.FC<DinoGameProps> = ({ projects }) => {
       window.removeEventListener('touchstart', handleInput);
       cancelAnimationFrame(animationFrameId);
     };
-  }, [projects]); 
+  }, [projects]);
 
   return (
     <div className="game-container">
