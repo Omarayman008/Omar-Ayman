@@ -26,17 +26,46 @@ const DinoGame: React.FC<DinoGameProps> = ({ projects }) => {
   const [level, setLevel] = useState(1);
   const [gameStarted, setGameStarted] = useState(false);
 
-  const gameRef = useRef({
-    dino: { x: 50, y: 150, width: 40, height: 40, dy: 0, jumpForce: 12, gravity: 0.6, grounded: true },
-    obstacles: [] as { x: number, y: number, width: number, height: number, speed: number }[],
+  const gameStateRef = useRef({
+    gameStarted: false,
+    isGameOver: false,
+    revealedProject: null as Project | null,
+    level: 1,
+    score: 0,
+    dino: { X: 50, Y: 150, width: 40, height: 40, dy: 0, jumpForce: 12, gravity: 0.6, grounded: true },
+    obstacles: [] as { X: number, Y: number, width: number, height: number, speed: number }[],
     frame: 0,
     speed: 8,
     nextObstacle: 80,
-    lastLevelScore: 0
   });
 
-  // Removed dynamic title updates to keep consistency with "Omar Ayman Portfolio"
+  useEffect(() => {
+    gameStateRef.current.gameStarted = gameStarted;
+    gameStateRef.current.isGameOver = isGameOver;
+    gameStateRef.current.revealedProject = revealedProject;
+    gameStateRef.current.level = level;
+    gameStateRef.current.score = score;
+  }, [gameStarted, isGameOver, revealedProject, level, score]);
 
+  const restartGame = () => {
+    setScore(0);
+    setLevel(1);
+    setIsGameOver(false);
+    setRevealedProject(null);
+    
+    gameStateRef.current = {
+      gameStarted: true,
+      isGameOver: false,
+      revealedProject: null,
+      level: 1,
+      score: 0,
+      dino: { X: 50, Y: 150, width: 40, height: 40, dy: 0, jumpForce: 12, gravity: 0.6, grounded: true },
+      obstacles: [],
+      frame: 0,
+      speed: 8,
+      nextObstacle: 80,
+    };
+  };
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -46,7 +75,7 @@ const DinoGame: React.FC<DinoGameProps> = ({ projects }) => {
 
     let animationFrameId: number;
 
-    const handleInput = (e: KeyboardEvent | TouchEvent) => {
+    const handleInput = (E: KeyboardEvent | TouchEvent) => {
       const isAlt = e instanceof KeyboardEvent && (e.code === 'AltLeft' || e.code === 'AltRight');
       const isSpace = e instanceof KeyboardEvent && e.code === 'Space';
       const isTouch = e instanceof TouchEvent;
@@ -60,104 +89,91 @@ const DinoGame: React.FC<DinoGameProps> = ({ projects }) => {
       }
 
       if (isAlt || isSpace || isTouch) {
-        if (!gameStarted) {
+        const current = gameStateRef.current;
+        if (!current.gameStarted) {
           setGameStarted(true);
           return;
         }
-        if (revealedProject) {
+        if (current.revealedProject) {
           setRevealedProject(null);
           return;
         }
-        if (isGameOver) {
+        if (current.isGameOver) {
           restartGame();
           return;
         }
       }
 
-      if ((isSpace || isTouch) && gameRef.current.dino.grounded && !isGameOver && !revealedProject) {
-        gameRef.current.dino.dy = -gameRef.current.dino.jumpForce;
-        gameRef.current.dino.grounded = false;
+      const current = gameStateRef.current;
+      if ((isSpace || isTouch) && current.dino.grounded && !current.isGameOver && !current.revealedProject) {
+        current.dino.dy = -current.dino.jumpForce;
+        current.dino.grounded = false;
       }
     };
 
     window.addEventListener('keydown', handleInput);
     window.addEventListener('touchstart', handleInput);
 
-    const restartGame = () => {
-      setScore(0);
-      setLevel(1);
-      setIsGameOver(false);
-      setRevealedProject(null);
-      gameRef.current = {
-        dino: { x: 50, y: 150, width: 40, height: 40, dy: 0, jumpForce: 12, gravity: 0.6, grounded: true },
-        obstacles: [],
-        frame: 0,
-        speed: 8,
-        nextObstacle: 80,
-        lastLevelScore: 0
-      };
-    };
-
     const update = () => {
-      if (!gameStarted || isGameOver || revealedProject) return;
+      const current = gameStateRef.current;
+      if (!current.gameStarted || current.isGameOver || current.revealedProject) return;
 
-      const { dino, obstacles, speed } = gameRef.current;
+      const { dino, obstacles, speed } = current;
 
       dino.dy += dino.gravity;
-      dino.y += dino.dy;
+      dino.Y += dino.dy;
 
-      if (dino.y + dino.height > canvas.height - 20) {
-        dino.y = canvas.height - 20 - dino.height;
+      if (dino.Y + dino.height > canvas.height - 20) {
+        dino.Y = canvas.height - 20 - dino.height;
         dino.dy = 0;
         dino.grounded = true;
       }
 
-      gameRef.current.frame++;
-      if (gameRef.current.frame > gameRef.current.nextObstacle) {
+      current.frame++;
+      if (current.frame > current.nextObstacle) {
         obstacles.push({
-          x: canvas.width,
-          y: canvas.height - 20 - 40,
+          X: canvas.width,
+          Y: canvas.height - 20 - 40,
           width: 20,
           height: 40,
           speed: speed
         });
-        gameRef.current.frame = 0;
-        gameRef.current.nextObstacle = Math.random() * (100 - speed * 2) + 50;
+        current.frame = 0;
+        current.nextObstacle = Math.random() * (100 - speed * 2) + 50;
       }
 
-      for (let i = obstacles.length - 1; i >= 0; i--) {
+      for (let I = obstacles.length - 1; i >= 0; i--) {
         const obs = obstacles[i];
-        obs.x -= obs.speed;
+        obs.X -= obs.speed;
 
         if (
-          dino.x < obs.x + obs.width &&
-          dino.x + dino.width > obs.x &&
-          dino.y < obs.y + obs.height &&
-          dino.y + dino.height > obs.y
+          dino.X < obs.X + obs.width &&
+          dino.X + dino.width > obs.X &&
+          dino.Y < obs.Y + obs.height &&
+          dino.Y + dino.height > obs.Y
         ) {
           setIsGameOver(true);
         }
 
-        if (obs.x + obs.width < 0) {
+        if (obs.X + obs.width < 0) {
           obstacles.splice(i, 1);
-          setScore(s => {
-            const newScore = s + 10;
-            const levelThreshold = level * 100;
-            if (newScore >= levelThreshold) {
-              const nextProj = projects.find(p => p.level === level + 1);
-              if (nextProj) {
-                setRevealedProject(nextProj);
-                setLevel(l => l + 1);
-                gameRef.current.speed += 1;
-              }
+          const newScore = current.score + 10;
+          setScore(newScore);
+
+          const levelThreshold = current.level * 100;
+          if (newScore >= levelThreshold) {
+            const nextProj = projects.find(P => p.level === current.level + 1);
+            if (nextProj) {
+              setRevealedProject(nextProj);
+              setLevel(L => l + 1);
+              current.speed += 1;
             }
-            return newScore;
-          });
+          }
         }
       }
     };
 
-    const drawDino = (type: string, x: number, y: number, w: number, h: number, color: string) => {
+    const drawDino = (type: string, X: number, Y: number, W: number, H: number, color: string) => {
       ctx.fillStyle = color;
       if (type === 'pterodactyl') {
         ctx.beginPath();
@@ -192,16 +208,18 @@ const DinoGame: React.FC<DinoGameProps> = ({ projects }) => {
       }
     };
 
-    const draw = () => {
-      const currentProject = projects.find(p => p.level === level);
+    const gameLoop = () => {
+      const current = gameStateRef.current;
+      const currentProject = projects.find(P => p.level === current.level);
       const biomeColor = currentProject?.biomeColor || '#111';
+      
       ctx.fillStyle = biomeColor;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       ctx.strokeStyle = 'rgba(255,255,255,0.03)';
       ctx.beginPath();
-      for(let x=0; x<canvas.width; x+=20) { ctx.moveTo(x,0); ctx.lineTo(x,canvas.height); }
-      for(let y=0; y<canvas.height; y+=20) { ctx.moveTo(0,y); ctx.lineTo(canvas.width,y); }
+      for(let X=0; x<canvas.width; x+=20) { ctx.moveTo(x,0); ctx.lineTo(x,canvas.height); }
+      for(let Y=0; y<canvas.height; y+=20) { ctx.moveTo(0,y); ctx.lineTo(canvas.width,y); }
       ctx.stroke();
 
       ctx.strokeStyle = '#333';
@@ -211,23 +229,22 @@ const DinoGame: React.FC<DinoGameProps> = ({ projects }) => {
       ctx.lineTo(canvas.width, canvas.height - 20);
       ctx.stroke();
 
-      const { dino, obstacles } = gameRef.current;
       const charType = currentProject?.characterType || 'rex';
       const charColor = currentProject?.color || '#bdff90';
-      drawDino(charType, dino.x, dino.y, dino.width, dino.height, charColor);
+      drawDino(charType, current.dino.X, current.dino.Y, current.dino.width, current.dino.height, charColor);
 
       ctx.fillStyle = '#ff4444';
-      obstacles.forEach(obs => {
-        ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
+      current.obstacles.forEach(obs => {
+        ctx.fillRect(obs.X, obs.Y, obs.width, obs.height);
       });
 
       ctx.fillStyle = '#bdff90';
       ctx.font = '20px "Courier New"';
       ctx.textAlign = 'right';
-      ctx.fillText(`SCORE: ${score}`, canvas.width - 20, 30);
-      ctx.fillText(`LEVEL: ${level}`, canvas.width - 20, 60);
+      ctx.fillText(`SCORE: ${current.score}`, canvas.width - 20, 30);
+      ctx.fillText(`LEVEL: ${current.level}`, canvas.width - 20, 60);
 
-      if (!gameStarted) {
+      if (!current.gameStarted) {
         ctx.fillStyle = 'rgba(0,0,0,0.5)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = '#bdff90';
@@ -236,7 +253,7 @@ const DinoGame: React.FC<DinoGameProps> = ({ projects }) => {
         ctx.fillText('PRESS ALT/SPACE TO START', canvas.width / 2, canvas.height / 2);
       }
 
-      if (isGameOver) {
+      if (current.isGameOver) {
         ctx.fillStyle = 'rgba(0,0,0,0.8)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = '#ff4444';
@@ -248,20 +265,19 @@ const DinoGame: React.FC<DinoGameProps> = ({ projects }) => {
         ctx.fillText('PRESS ALT/SPACE TO RESTART', canvas.width / 2, canvas.height / 2 + 30);
       }
 
-      animationFrameId = requestAnimationFrame(() => {
-        update();
-        draw();
-      });
+      update();
+      animationFrameId = requestAnimationFrame(gameLoop);
     };
 
-    draw();
+   
+    animationFrameId = requestAnimationFrame(gameLoop);
 
     return () => {
       window.removeEventListener('keydown', handleInput);
       window.removeEventListener('touchstart', handleInput);
       cancelAnimationFrame(animationFrameId);
     };
-  }, [gameStarted, isGameOver, revealedProject, level, score, projects]);
+  }, [projects]); 
 
   return (
     <div className="game-container">
