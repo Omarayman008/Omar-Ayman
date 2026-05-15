@@ -39,6 +39,7 @@ const DinoGame: React.FC<DinoGameProps> = ({ projects }) => {
     nextObstacle: 80,
   });
 
+
   useEffect(() => {
     gameStateRef.current.gameStarted = gameStarted;
     gameStateRef.current.isGameOver = isGameOver;
